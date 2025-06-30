@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  view-service:
+    build:
+      context: ./view-service
+    ports:
+      - "8001:8000"
+    volumes:
+    - ./view-service:/var/www
+    command: php -S 0.0.0.0:8000 -t public
