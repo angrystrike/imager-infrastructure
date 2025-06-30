@@ -1,10 +1,20 @@
-version: '3.8'
 services:
   view-service:
     build:
       context: ./view-service
-    ports:
-      - "8001:8000"
+    expose:
+      - 9000
     volumes:
-    - ./view-service:/var/www
-    command: php -S 0.0.0.0:8000 -t public
+      - ./view-service:/var/www
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '8001:80'
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./view-service:/var/www
+    depends_on:
+      - view-service
+    restart: unless-stopped
