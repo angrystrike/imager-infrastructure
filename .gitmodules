@@ -1,0 +1,3 @@
+[submodule "upload-service"]
+	path = upload-service
+	url = https://github.com/angrystrike/imager-upload-service.git
