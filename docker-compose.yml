@@ -15,6 +15,10 @@ services:
       - 9001
     volumes:
       - ./upload-service:/var/www/upload-service
+    env_file:
+      - ./upload-service/.env.local
+    depends_on:
+      - db
     restart: unless-stopped
 
   nginx:
