@@ -5,16 +5,16 @@ services:
     expose:
       - 9000
     volumes:
-      - ./view-service:/var/www/view-service
+      - ./view-service:/var/www
     restart: unless-stopped
 
   upload-service:
     build:
       context: ./upload-service
     expose:
-      - 9001
+      - 9000
     volumes:
-      - ./upload-service:/var/www/upload-service
+      - ./upload-service:/var/www
     env_file:
       - ./upload-service/.env.local
     depends_on:
@@ -28,9 +28,11 @@ services:
       - '8002:82'
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./view-service:/var/www
+      - ./view-service:/var/www/view-service
+      - ./upload-service:/var/www/upload-service
     depends_on:
       - view-service
+      - upload-service
     restart: unless-stopped
 
   db:
@@ -41,6 +43,13 @@ services:
       - db:/var/lib/mysql
     ports:
       - '3307:3306'
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
     restart: unless-stopped
 
 volumes:
