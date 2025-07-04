@@ -1,3 +1,5 @@
 /upload-service/
 /view-service/
 /.idea/
+/shared_data/*
+!/shared_data/.gitkeep
