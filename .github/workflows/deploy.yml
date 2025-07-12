@@ -26,6 +26,6 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no \
+          ssh -o StrictHostKeyChecking=no \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
             "cd ${{ secrets.EC2_TARGET_DIR }} && /home/ubuntu/deploy.sh"
