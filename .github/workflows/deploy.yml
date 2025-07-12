@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'view-service/**'
+      - 'upload-service/**'
+      - 'docker-compose.yml'
+      - 'nginx/**'
 
 jobs:
   deploy:
