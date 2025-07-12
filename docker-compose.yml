@@ -4,6 +4,8 @@ services:
       context: ./view-service
     expose:
       - 9000
+    ports:
+      - '9003:9003'
     volumes:
       - ./view-service:/var/www
       - ./shared-data:/var/www/shared-data
