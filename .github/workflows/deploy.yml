@@ -1,22 +1,35 @@
-name: Deploy to EC2
+name: Deploy Monorepo Services to EC2
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - 'view-service/**'
-      - 'upload-service/**'
-      - 'docker-compose.yml'
-      - 'nginx/**'
+  repository_dispatch:
+    types: [deploy-monorepo]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout imager-infrastructure (where this workflow lives)
         uses: actions/checkout@v4
+        with:
+          repository: angrystrike/imager-infrastructure
+          path: imager-infrastructure
+          token: ${{ secrets.REPO_DISPATCH_PAT }}
+
+      - name: Checkout imager-view-service
+        uses: actions/checkout@v4
+        with:
+          repository: angrystrike/imager-view-service
+          path: imager-infrastructure/view-service
+          token: ${{ secrets.REPO_DISPATCH_PAT }}
+
+      - name: Checkout imager-upload-service
+        uses: actions/checkout@v4
+        with:
+          repository: angrystrike/imager-upload-service
+          path: imager-infrastructure/upload-service
+          token: ${{ secrets.REPO_DISPATCH_PAT }}
 
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -31,6 +44,9 @@ jobs:
 
       - name: Deploy to EC2
         run: |
+          # The EC2_TARGET_DIR secret should point to the root of your monorepo structure on EC2
+          # (e.g., /home/ubuntu/imager)
+          # The deploy.sh script will then navigate into view-service and upload-service
           ssh -o StrictHostKeyChecking=no \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
             "cd ${{ secrets.EC2_TARGET_DIR }} && /home/ubuntu/deploy.sh"
